@@ -20,31 +20,39 @@ class Genotype(Enum):
     CC = 'CC'
 
 
-class User(db.model):
+class User(db.Model):
     __tablename__ = "user"
-    id = db.Column(db.Integer(), primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     first_name = db.Column(db.String(50), nullable= False)
     last_name = db.Column(db.String(50), nullable= False)
     other_names= db.Column(db.String(60), nullable = True)
     email= db.Column(db.String(40),unique= True, nullable=False)
-    phone_no = db.Column(db.Integer(11),nullable= False)
+    password_hash = db.Column(db.Text, nullable = False)
+    phone_no = db.Column(db.Integer,nullable= False)
     blood_group= db.Column(db.Enum(BloodGroup), nullable = False)
     genotype = db.Column(db.Enum(Genotype), nullable = False)
-    age =db.Column(db.Integer(3), nullable = False)
-    gender = db.Column(db.String(), nullable = False)
-    address= db.Column(db.String())
-    next_of_kin_name= db.Column(db.String())
-    next_of_kin_relationship= db.Column(db.String())
-    next_of_kin_address = db.Column(db.String())
+    age =db.Column(db.Integer, nullable = False)
+    gender = db.Column(db.String(15), nullable = False)
+    address= db.Column(db.String(250))
+    next_of_kin_name= db.Column(db.String(50))
+    next_of_kin_relationship= db.Column(db.String(50))
+    next_of_kin_address = db.Column(db.String(250))
+    emergency = db.relationship('Emergency', backref='user', lazy=True)
     
-
-
-
-
 
     def __repr__(self):
         return f"User{self.id}"
     
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete()
+        db.session.commit()
 
 
 
